@@ -4,7 +4,7 @@ steps:
   args:
   - '-c'
   - |
-    cd preprocess/ && docker pull gcr.io/$PROJECT_ID/fuel:latest || exit 0
+    docker pull gcr.io/$PROJECT_ID/fuel:latest || exit 0
 - name: 'gcr.io/cloud-builders/docker'
   args: 
   - 'build'
@@ -12,5 +12,5 @@ steps:
   - 'gcr.io/$PROJECT_ID/fuel:latest'
   - '--cache-from'
   - 'gcr.io/$PROJECT_ID/fuel:latest'
-  - '.'
+  - 'preprocess/'
 images: ['gcr.io/$PROJECT_ID/fuel:latest']

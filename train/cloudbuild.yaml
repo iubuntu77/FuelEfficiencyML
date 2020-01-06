@@ -12,5 +12,5 @@ steps:
   - 'gcr.io/$PROJECT_ID/fuel/train:latest'
   - '--cache-from'
   - 'gcr.io/$PROJECT_ID/fuel/train:latest'
-  - '.'
+  - 'train/'
 images: ['gcr.io/$PROJECT_ID/fuel/train:latest']
