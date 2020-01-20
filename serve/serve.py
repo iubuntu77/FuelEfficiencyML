@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import pathlib
+import argparse
 import sys
 import numpy as np
 import pandas as pd
@@ -15,6 +16,17 @@ from google.cloud import storage
 print(tf.__version__)
 
 #keras.utils.get_file("auto-mpg.data", "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data")
+
+def parse_arguments():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bucket_name',
+            type=str,
+            default='gs://',
+            help='The bucket where the output has to be stored')
+    args = parser.parse_known_args()[0]
+    return args
+
 
 def train(bucket_name):
 
@@ -61,8 +73,7 @@ def build_model(trainDF):
   return model
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-       print("Usage:Provide train bucket-name")
-       sys.exit(-1)
-    bucket_name = sys.argv[1]
-    train(bucket_name)
+
+   args = parse_arguments()
+   print(args)
+   train(args.bucket_name)

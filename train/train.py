@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import pathlib
+import argparse
 import sys
 import numpy as np
 import pandas as pd
@@ -16,7 +17,23 @@ print(tf.__version__)
 
 #keras.utils.get_file("auto-mpg.data", "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data")
 
-def train(bucket_name):
+def parse_arguments():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bucket_name',
+            type=str,
+            default='gs://',
+            help='The bucket where the output has to be stored')
+
+    parser.add_argument('--epochs',
+            type=int,
+            default=1,
+            help='Number of epochs for training the model')
+
+    args = parser.parse_known_args()[0]
+    return args
+
+def train(bucket_name, epochs):
 
     train_file = bucket_name + '/output/train.csv'
     test_file = bucket_name + '/output/test.csv'
@@ -46,7 +63,7 @@ def train(bucket_name):
     # The patience parameter is the amount of epochs to check for improvement
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
 
-    EPOCHS = 10
+    EPOCHS = epochs
 
     model = build_model(trainDF)
     print(model.summary())
@@ -76,8 +93,7 @@ def build_model(trainDF):
   return model
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-       print("Usage: Provide train bucket-name")
-       sys.exit(-1)
-    bucket_name = sys.argv[1]
-    train(bucket_name)
+
+    args = parse_arguments()
+    print(args)
+    train(args.bucket_name, int(args.epochs))

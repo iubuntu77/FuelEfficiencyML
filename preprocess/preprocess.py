@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import pathlib
+import argparse
 import sys
 import numpy as np
 import pandas as pd
@@ -15,6 +16,28 @@ from google.cloud import storage
 print(tf.__version__)
 
 #keras.utils.get_file("auto-mpg.data", "http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data")
+
+def parse_arguments():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--bucket_name',
+            type=str,
+            default='gs://',
+            help='The bucket where the output has to be stored')
+
+    parser.add_argument('--input_file', 
+            type=str,
+            default='input/train.csv',
+            help='The input file required to process the data')
+
+    parser.add_argument('--output_folder', 
+            type=str,
+            default='output',
+            help='The output folder for the processed data')
+
+    args = parser.parse_known_args()[0]
+    return args
+
 
 def preprocess(input_file, output_folder, bucket_name):
 
@@ -83,10 +106,7 @@ def uploadToGCS(df, fileName, bucket_name):
     )
 
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-       print("Usage:preprocess input_file output_folder  bucket-name")
-       sys.exit(-1)
-    input_file = sys.argv[1]
-    output_folder = sys.argv[2]
-    bucket_name = sys.argv[3]
-    preprocess(input_file, output_folder, bucket_name)
+    
+    args = parse_arguments()
+    print(args)
+    preprocess(args.input_file, args.output_folder, args.bucket_name)
